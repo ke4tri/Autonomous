@@ -6,21 +6,35 @@
         Echo: Echo (OUTPUT) - Pin 12
         GND: GND
  */
+#include <Wire.h>
  #include <Servo.h>
  Servo myservo;
+
+   /////////////// ACCELEROMETER
+const int MPU=0x68;
+int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
  
+  ////////////////SERVO AND THE SONIC
 int pos = 0; 
 int trigPin = 4;    // Trigger
 int echoPin = 5;    // Echo
 long duration, cm, inches;
  
 void setup() {
+  ////////////////SERVO AND THE SONIC
   //Serial Port begin
   Serial.begin (9600);
   //Define inputs and outputs
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   myservo.attach(9);
+
+  /////////////// ACCELEROMETER
+   Wire.begin();
+  Wire.beginTransmission(MPU);
+  Wire.write(0x6B); 
+  Wire.write(0);    
+  Wire.endTransmission(true);
 }
  
 void loop() {
@@ -31,18 +45,15 @@ void loop() {
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
- 
-
   pinMode(echoPin, INPUT);
   duration = pulseIn(echoPin, HIGH);
- 
   inches = (duration/2) / 74;   // Divide by 74 or multiply by 0.0135
   
   Serial.print(inches);
   Serial.print("in, ");
   Serial.println();
   
-  delay(250);
+  delay(100);
 
   if (inches <= 10)
   {
@@ -53,16 +64,53 @@ void loop() {
     myservo.write(0);
     }
   
+    /////////////// ACCELEROMETER
+ Wire.beginTransmission(MPU);
+  Wire.write(0x3B);  
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU,12,true);  
+//  AcX=Wire.read()<<8|Wire.read();    
+//  AcY=Wire.read()<<8|Wire.read();  
+//  AcZ=Wire.read()<<8|Wire.read();  
+//  GyX=Wire.read()<<8|Wire.read();  
+//  GyY=Wire.read()<<8|Wire.read();  
+//  GyZ=Wire.read()<<8|Wire.read();  
 
-//for (pos = 0; pos <= 180; pos +=1) {
-//  myservo.write(pos);
-//  delay(15);
-//  }
-//for (pos = 180; pos >= 0; pos -= 1) {
-//  myservo.write(pos);
-//  delay(15);
-//  }
+  AcX=Wire.read();    
+  AcY=Wire.read();  
+  AcZ=Wire.read();  
+  GyX=Wire.read();  
+  GyY=Wire.read();  
+  GyZ=Wire.read();  
   
+//  Serial.print("Accelerometer: ");
+//  Serial.print("X = "); Serial.print(AcX);
+//  Serial.print(" | Y = "); Serial.print(AcY);
+//  Serial.print(" | Z = "); Serial.println(AcZ); 
+  
+//  Serial.print("Gyroscope: ");
+//  Serial.print("X = "); Serial.print(GyX);
+//  Serial.print(" | Y = "); Serial.print(GyY);
+//  Serial.print(" | Z = "); Serial.println(GyZ);
+//  Serial.println(" ");
+
+//Serial.print(AcX);
+//Serial.print(" ");
+//Serial.print(AcY);
+//Serial.print(" ");
+//Serial.print(AcZ);
+//Serial.print(" ");
+
+
+
+Serial.print(GyX);
+Serial.print(" ");
+Serial.print(GyY);
+Serial.print(" ");
+Serial.print(GyZ);
+Serial.print(" ");
+
+  //delay(333);
   
 }
 
