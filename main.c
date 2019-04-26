@@ -10,18 +10,19 @@
  #include <Servo.h>
  Servo myservo;
 
-   /////////////// ACCELEROMETER
+   ///////////////  ACCELEROMETER
 const int MPU=0x68;
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
  
-  ////////////////SERVO AND THE SONIC
+  ////////////////SERVO CONTROLED BY SONIC
 int pos = 0; 
 int trigPin = 4;    // Trigger
 int echoPin = 5;    // Echo
 long duration, cm, inches;
  
 void setup() {
-  ////////////////SERVO AND THE SONIC
+  ////////////////SERVO CONTROLED BY SONIC
+    
   //Serial Port begin
   Serial.begin (9600);
   //Define inputs and outputs
@@ -65,16 +66,10 @@ void loop() {
     }
   
     /////////////// ACCELEROMETER
- Wire.beginTransmission(MPU);
+  Wire.beginTransmission(MPU);
   Wire.write(0x3B);  
   Wire.endTransmission(false);
   Wire.requestFrom(MPU,12,true);  
-//  AcX=Wire.read()<<8|Wire.read();    
-//  AcY=Wire.read()<<8|Wire.read();  
-//  AcZ=Wire.read()<<8|Wire.read();  
-//  GyX=Wire.read()<<8|Wire.read();  
-//  GyY=Wire.read()<<8|Wire.read();  
-//  GyZ=Wire.read()<<8|Wire.read();  
 
   AcX=Wire.read();    
   AcY=Wire.read();  
@@ -82,25 +77,6 @@ void loop() {
   GyX=Wire.read();  
   GyY=Wire.read();  
   GyZ=Wire.read();  
-  
-//  Serial.print("Accelerometer: ");
-//  Serial.print("X = "); Serial.print(AcX);
-//  Serial.print(" | Y = "); Serial.print(AcY);
-//  Serial.print(" | Z = "); Serial.println(AcZ); 
-  
-//  Serial.print("Gyroscope: ");
-//  Serial.print("X = "); Serial.print(GyX);
-//  Serial.print(" | Y = "); Serial.print(GyY);
-//  Serial.print(" | Z = "); Serial.println(GyZ);
-//  Serial.println(" ");
-
-//Serial.print(AcX);
-//Serial.print(" ");
-//Serial.print(AcY);
-//Serial.print(" ");
-//Serial.print(AcZ);
-//Serial.print(" ");
-
 
 
 Serial.print(GyX);
